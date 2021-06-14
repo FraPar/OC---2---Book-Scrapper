@@ -22,3 +22,13 @@ for i in range(51):
 
 print("There are", lentghbooks, "books :")
 print(books)
+
+with open('urls.txt', 'w') as file :
+    for book in books:
+        file.write(book + '\n')
+
+#with open('urls.txt', 'r') as file :
+#    for row in file:
+#        print(row)
+
+
