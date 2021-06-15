@@ -2,17 +2,17 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
+#Getting all categories of the website
 r = requests.get('https://books.toscrape.com/catalogue/category/books_1/index.html')
 html_doc = r.text
 soup = BeautifulSoup(html_doc, 'html.parser')
 categories = soup.find("div", {"class":"side_categories"}).findAll("a")
 #print(categories)
-cat_list = []
 
+cat_list = []
 for category in categories[1:]:
     cat_path = category.get('href').split("/")[2]
     cat_list.append(cat_path)
-print(cat_list)
 
 for category in cat_list:
     #category we want to scrap
@@ -44,6 +44,21 @@ for category in cat_list:
                 book_to_scrap = books.find('a', href=True)["href"].replace('../../../','https://books.toscrape.com/catalogue/')
                 books_data.append(book_to_scrap)
                 new_book_len = len(books_data)
+
+    #if there is only 1 page, the url is changing. Then we call this code
+    if len(books_data) == 0:
+        r = requests.get('https://books.toscrape.com/catalogue/category/books/' + category + '/index.html')
+        html_doc = r.text
+        soup = BeautifulSoup(html_doc, 'html.parser')
+        book_in_cat = soup.findAll("li", {"class":"col-xs-6 col-sm-4 col-md-3 col-lg-3"})
+
+        #loop on each books finded on the page, stopping while there is no more books
+        prev_book_len = new_book_len
+        for books in book_in_cat:
+            #making URL of each books to scrap
+            book_to_scrap = books.find('a', href=True)["href"].replace('../../../','https://books.toscrape.com/catalogue/')
+            books_data.append(book_to_scrap)
+            new_book_len = len(books_data)
 
     print(str(len(books_data)) + " books finded in " + category_name.replace("-"," "))
 
