@@ -1,4 +1,5 @@
 import requests
+import os
 from bs4 import BeautifulSoup
 import csv
 
@@ -65,8 +66,16 @@ for category in cat_list:
     #fields of the .csv file
     fields = ['product_page_url', 'universal_product_code', 'title', 'price_including_tax', 'price_excluding_tax', 'number_available', 'product_description', 'category', 'review_rating', 'image_url']
 
+    #Creating Repository
+    file_path = os.path.realpath(__file__).replace('scrapping.py','').replace("\\","/")
+    try:
+        os.makedirs(file_path + category_name, mode = 0o777, exist_ok=True)
+    except FileExistsError:
+        # directory already exists
+        pass
+
     #writting in the .csv file
-    with open( category_name + '_scrap.csv', 'w', newline='', encoding="utf-8") as csv_file:
+    with open( file_path + "/" + category_name + "/" + category_name + '_scrap.csv', 'w', newline='', encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(fields)
         for books in books_data:
@@ -100,6 +109,12 @@ for category in cat_list:
 
             #Link image of the book
             book_imgurl = "https://books.toscrape.com/" + soup.findAll("img")[0]["src"].replace("../../","").strip()
+
+            #Downloading the image
+            get_img = requests.get(book_imgurl)
+            file = open( file_path + "/" + category_name + "/" + books.split("/")[-2] + ".png","wb")
+            file.write(get_img.content)
+            file.close()
 
             #data fitting with fields
             books_to_csv.extend([r.url, book_upc, book_title, book_pet, book_pit, book_avlb, book_desc, book_cat, book_rate, book_imgurl])
