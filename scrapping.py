@@ -16,7 +16,7 @@ for category in categories[1:]:
 
 for category in cat_list:
     #category we want to scrap
-    #category = "historical-fiction_4"
+    #category = "classics_6"
     category_name = category.split("_")[0]
 
     #data of books we want to keep for scrapping
@@ -88,9 +88,12 @@ for category in cat_list:
             #Title of the book
             book_title = soup.find("div", {"class":"col-sm-6 product_main"}).find("h1").text.strip()
 
-            #Description of the book
-            book_desc = soup.find("div", {"id":"product_description"}).find_next_sibling("p").get_text().replace(";",",")
-            #print(book_desc)
+            #Description of the book + testing if there is a description
+            pre_test_desc = soup.find("div", {"id":"product_description"})
+            if pre_test_desc is None:
+                book_desc = "No description"
+            else :
+                book_desc = pre_test_desc.find_next_sibling("p").get_text().replace(";",",")
 
             #Category of the book
             book_cat = soup.findAll('li')[2].text.strip()
