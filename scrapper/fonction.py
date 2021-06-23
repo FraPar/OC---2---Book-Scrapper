@@ -86,10 +86,10 @@ def getTreatAndSaveBookInfo(books, file_path, category_name, writer):
     book_pet = book_infos[2].text.split("£",1)[1].strip()
     book_pit = book_infos[3].text.split("£",1)[1].strip()
     book_avlb = book_infos[5].text.split("(",1)[1].split(" ",1)[0].strip()
-    book_rate = book_infos[6].text.split(" ",1)[-1].split("\n",1)[-1].strip()
 
     #Title of the book
     book_title = soup.find("div", {"class":"col-sm-6 product_main"}).find("h1").text.strip()
+    book_rate = soup.find("p", {"class":"star-rating"}).get("class")[1]
 
     #Description of the book + testing if there is a description
     pre_test_desc = soup.find("div", {"id":"product_description"})
