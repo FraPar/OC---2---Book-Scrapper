@@ -64,12 +64,14 @@ def getAllBooksLinksByCategories(category):
     print(str(len(books_data)) + " books finded in " + category_name.replace("-"," "))
     return books_data, category_name
 
+#fonction to get image and save it in a particular folder
 def getImageAndSave(book_imgurl, file_path, category_name, books):
     get_img = requests.get(book_imgurl)
     file = open( file_path + "/" + category_name + "/" + books.split("/")[-2] + ".png","wb")
     file.write(get_img.content)
     file.close()
 
+#fonction to get inside information of books
 def getTreatAndSaveBookInfo(books, file_path, category_name, writer):
     books_to_csv = []
     r = requests.get(books)
